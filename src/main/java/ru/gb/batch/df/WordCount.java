@@ -4,8 +4,11 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.api.java.UDF1;
 
 import static org.apache.spark.sql.functions.*;
+import org.apache.spark.sql.expressions.UserDefinedFunction;
+import org.apache.spark.sql.types.DataTypes;
 
 /**
  * Класс запускает Spark RDD задачу, которая:
@@ -49,9 +52,16 @@ public class WordCount {
      * после чего считает количество повторений каждого терма.
      */
     static Dataset<Row> countWords(Dataset<Row> df, String delimiter) {
+        UserDefinedFunction removePunct = udf((String s) ->
+            s.toLowerCase().replaceAll("\\p{IsPunctuation}", ""),DataTypes.StringType
+        );
+
+        df.sparkSession().udf().register("removePunct", removePunct);
+
         return df.select(concat_ws(" ", col("class"), col("comment")).as("docs"))
                 .select(split(col("docs"), delimiter).as("words"))
                 .select(explode(col("words")).as("word"))
+                .selectExpr("removePunct(word) as word")
                 .groupBy(col("word")).count();
     }
 
