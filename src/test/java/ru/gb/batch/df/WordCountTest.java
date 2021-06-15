@@ -42,8 +42,9 @@ public class WordCountTest {
     public void countWords() {
         // init data
         List<Row> data = Arrays.asList(
-                RowFactory.create("positive", "Good day"),
-                RowFactory.create("neutral", "Rainy day")
+                RowFactory.create("positive", "Good day!"),
+                RowFactory.create("neutral",  "Rainy day."),
+                RowFactory.create("negative", "Bad day#&*?!!!")
         );
         StructType schema = DataTypes.createStructType(Arrays.asList(
                 DataTypes.createStructField("class", DataTypes.StringType, false),
@@ -63,9 +64,11 @@ public class WordCountTest {
         Map<String, Long> expected = new HashMap<>();
         expected.put("positive", 1L);
         expected.put("neutral", 1L);
-        expected.put("Good", 1L);
-        expected.put("Rainy", 1L);
-        expected.put("day", 2L);
+        expected.put("negative", 1L);
+        expected.put("good", 1L);
+        expected.put("bad", 1L);
+        expected.put("rainy", 1L);
+        expected.put("day", 3L);
         assertEquals(expected, actual);
     }
 }
