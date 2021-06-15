@@ -57,7 +57,7 @@ public class WordCountTest {
         Map<String, Long> actual = result
                 .collectAsList()
                 .stream()
-                .collect(Collectors.toMap(row -> row.getString(0), row -> row.getLong(1)));
+                .collect(Collectors.toMap(row -> row.getString(1), row -> row.getLong(0)));
 
         // validate
         Map<String, Long> expected = new HashMap<>();
