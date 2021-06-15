@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -42,8 +43,8 @@ public class WordCountTest {
     public void countWords() {
         // init data
         List<Row> data = Arrays.asList(
-                RowFactory.create("positive", "Good day"),
-                RowFactory.create("neutral", "Rainy day")
+                RowFactory.create("positive", "Good day huh"),
+                RowFactory.create("neutral", "Rainy day oh my")
         );
         StructType schema = DataTypes.createStructType(Arrays.asList(
                 DataTypes.createStructField("class", DataTypes.StringType, false),
@@ -52,7 +53,7 @@ public class WordCountTest {
         Dataset<Row> df = sqlc.createDataFrame(data, schema);
 
         // transform data
-        Dataset<Row> result = WordCount.countWords(df, " ");
+        Dataset<Row> result = WordCount.countWords(df, " ", new HashSet<String>(Arrays.asList("huh", "oh", "my")));
 
         Map<String, Long> actual = result
                 .collectAsList()
